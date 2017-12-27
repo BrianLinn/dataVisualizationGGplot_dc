@@ -1,0 +1,35 @@
+---
+title: "dataVisualizationGGplot_dc"
+author: "Brian Linn"
+date: "December 27, 2017"
+output: html_document
+---
+
+
+#Data Visualization with ggplot2
+
+##
+
+
+```{r firstExample}
+library(MASS)
+library(ggplot2)
+ggplot(mammals, aes(x = body, y = brain)) +
+        geom_point(alpha = 0.6) +
+        stat_smooth(method = "lm",
+                    col = "red",
+                    se = FALSE)
+#the line above is a poor fit
+#use log to get a better line
+ggplot(mammals, aes(x = body, y = brain)) +
+        geom_point(alpha = 0.6) +
+        coord_fixed() + 
+        scale_x_log10() +
+        scale_y_log10() +
+        stat_smooth(method = "lm",
+                    col = "#C42126",
+                    se = FALSE,
+                    size = 1)
+
+```
+
