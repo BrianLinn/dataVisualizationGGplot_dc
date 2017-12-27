@@ -165,3 +165,281 @@ ggplot(iris,
 
 ```
 
+###Exploring ggplot2, part 4
+The diamonds data frame contains information on the prices and various metrics of 50,000 diamonds. Among the variables included are carat (a measurement of the size of the diamond) and price. For the next exercises, you'll be using a subset of 1,000 diamonds.
+
+Here you'll use two common geom layer functions: geom_point() and geom_smooth(). We already saw in the earlier exercises how these are added using the + operator.
+
+Explore the diamonds data frame with the str() function.
+Use the + operator to add geom_point() to the first ggplot() command. This will tell ggplot2 to draw points on the plot.
+Use the + operator to add geom_point() and geom_smooth(). These just stack on each other! geom_smooth() will draw a smoothed line over the points.
+
+```{r ggplot2Part4}
+# Explore the diamonds data frame with str()
+str(diamonds)
+
+# Add geom_point() with +
+ggplot(diamonds, aes(x = carat, y = price)) +
+        geom_point()
+
+
+# Add geom_point() and geom_smooth() with +
+ggplot(diamonds, aes(x = carat, y = price)) +
+        geom_point() +
+        geom_smooth()
+
+#Lovely layering! If you had executed the command without adding a +, it would produce an error message 'No layers in plot' because you are missing the third essential layer - the geom layer.
+```
+
+
+###Exploring ggplot2, part 5
+The code for last plot of the previous exercise is available in the script on the right. It builds a scatter plot of the diamonds dataset, with carat on the x-axis and price on the y-axis. geom_smooth() is used to add a smooth line.
+
+With this plot as a starting point, let's explore some more possibilities of combining geoms.
+
+Plot 2 - Copy and paste plot 1, but show only the smooth line, no points.
+Plot 3 - Show only the smooth line, but color according to clarity by placing the argument color = clarity in the aes() function of your ggplot() call.
+Plot 4 - Draw translucent colored points.
+Copy the ggplot() command from plot 3 (with clarity mapped to color).
+Remove the smooth layer.
+Add the points layer back in.
+Set alpha = 0.4 inside geom_point(). This will make the points 40% transparent.
+
+```{r ggplot2Part5}
+# 1 - The plot you created in the previous exercise
+ggplot(diamonds, aes(x = carat, y = price)) +
+  geom_point() +
+  geom_smooth()
+
+# 2 - Copy the above command but show only the smooth line
+ggplot(diamonds, aes(x = carat, y = price)) +
+    geom_smooth()
+
+
+# 3 - Copy the above command and assign the correct value to col in aes()
+ggplot(diamonds, aes(x = carat, y = price,
+                     color = clarity)) +
+    geom_smooth()
+
+
+# 4 - Keep the color settings from previous command. Plot only the points with argument alpha.
+ggplot(diamonds, aes(x = carat, y = price,
+                     color = clarity)) +
+        geom_point(alpha = 0.4)
+```
+
+###Understanding the grammar, part 1
+Here you'll explore some of the different grammatical elements. Throughout this course, you'll discover how they can be combined in all sorts of ways to develop unique plots.
+
+In the following instructions, you'll start by creating a ggplot object from the diamonds dataset. Next, you'll add layers onto this object to build beautiful & informative plots.
+
+Define the data (diamonds) and aesthetics layers. Map carat on the x axis and price on the y axis. Assign it to an object: dia_plot.
+Using +, add a geom_point() layer (with no arguments), to the dia_plot object. This can be in a single or multiple lines.
+Note that you can also call aes() within the geom_point() function. Map clarity to the color argument in this way.
+
+```{r grammarPart1}
+# Create the object containing the data and aes layers: dia_plot
+dia_plot <- ggplot(diamonds, 
+                   aes(x = carat, 
+                       y = price)
+)
+
+# Add a geom layer with + and geom_point()
+dia_plot + 
+        geom_point()
+
+# Add the same geom layer, but with aes() inside
+dia_plot + 
+        geom_point(aes(color = clarity))
+
+
+```
+
+###Understanding the grammar, part 2
+Continuing with the previous exercise, here you'll explore mixing arguments and aesthetics in a single geometry.
+
+You're still working on the diamonds dataset.
+
+1 - The dia_plot object has been created for you.
+2 - Update dia_plot so that it contains all the functions to make a scatter plot by using geom_point() for the geom layer. Set alpha = 0.2.
+3 - Using +, plot the dia_plot object with a geom_smooth() layer on top. You don't want any error shading, which can be achieved by setting the se = FALSE in geom_smooth().
+4 - Modify the geom_smooth() function from the previous instruction so that it contains aes() and map clarity to the col argument.
+
+```{r grammarPart2}
+# 1 - The dia_plot object has been created for you
+dia_plot <- ggplot(diamonds, aes(x = carat, y = price))
+
+# 2 - Expand dia_plot by adding geom_point() with alpha set to 0.2
+dia_plot <- dia_plot + geom_point(alpha = 0.2)
+
+# 3 - Plot dia_plot with additional geom_smooth() with se set to FALSE
+dia_plot + geom_smooth(se = FALSE)
+
+# 4 - Copy the command from above and add aes() with the correct mapping to geom_smooth()
+dia_plot + geom_smooth(aes(col = clarity), se = FALSE)
+```
+
+
+##Data Layer
+*How data structure influences plots
+*How we understand data
+*ggplot vs base
+
+```{r dataSample}
+iris <- iris[c(5, 1:4)]
+str(iris)
+
+plot(iris$Sepal.Length, iris$Sepal.Width)
+points(iris$Petal.Length, iris$Petal.Width, col = "red")
+
+ggplot(iris,
+       aes(x = Sepal.Length,
+           y = Sepal.Width)) + 
+        geom_point()
+#iris is the data layer
+#aes is the aesthetic layer
+#geom_point is the geometry
+```
+
+###Base plot v gglot
+**Limitations**
+
+1. Plot doesn't get redrawn
+2. Plot is drawn as an image - not an object
+3. Need to manually add legend
+4. No unified framework for plotting
+
+###base package and ggplot2, part 1 - plot
+These courses are about understanding data visualization in the context of the grammar of graphics. To gain a better appreciation of ggplot2 and to understand how it operates differently from base package, it's useful to make some comparisons.
+
+In the video, you already saw one example of how to make a (poor) multivariate plot in base package. In this series of exercises you'll take a look at a better way using the equivalent version in ggplot2.
+
+First, let's focus on base package. You want to make a plot of mpg (miles per gallon) against wt (weight in thousands of pounds) in the mtcars data frame, but this time you want the dots colored according to the number of cylinders, cyl. How would you do that in base package? You can use a little trick to color the dots by specifying a factor variable as a color. This works because factors are just a special class of the integer type.
+
+Using the base package plot(), make a scatter plot with mtcars$wt on the x-axis and mtcars$mpg on the y-axis, colored according to mtcars$cyl (use the col argument). You can specify data = but you'll just do it the long way here.
+Add a new column, fcyl, to the mtcars data frame. This should be cyl converted to a factor.
+Create a similar plot to instruction 1, but this time, use fcyl (which is cyl as a factor) to set the col.
+
+```{r baseVggplotPart1Plot}
+# Plot the correct variables of mtcars
+plot(mtcars$wt, mtcars$mpg, col = mtcars$cyl)
+
+# Change cyl inside mtcars to a factor
+mtcars$fcyl <- as.factor(mtcars$cyl)
+
+# Make the same plot as in the first instruction
+plot(mtcars$wt, mtcars$mpg, col = mtcars$fcyl)
+
+#Recall that under-the-hood, factors are simply integer type vectors, so the colors in the second plot are 1, 2, and 3. In the first plot the colors were 4, 6, and 8.
+```
+
+###base package and ggplot2, part 2 - lm
+If you want to add a linear model to your plot, shown right, you can define it with lm() and then plot the resulting linear model with abline(). However, if you want a model for each subgroup, according to cylinders, then you have a couple of options.
+
+You can subset your data, and then calculate the lm() and plot each subset separately. Alternatively, you can vectorize over the cyl variable using lapply() and combine this all in one step. This option is already prepared for you.
+
+The code to the right contains a call to the function lapply(), which you might not have seen before. This function takes as input a vector and a function. Then lapply() applies the function it was given to each element of the vector and returns the results in a list. In this case, lapply() takes each element of mtcars$cyl and calls the function defined in the second argument. This function takes a value of mtcars$cyl and then subsets the data so that only rows with cyl == x are used. Then it fits a linear model to the filtered dataset and uses that model to add a line to the plot with the abline() function.
+
+Now that you have an interesting plot, there is a very important aspect missing - the legend!
+
+In base package you have to take care of this using the legend() function. This has been done for you in the predefined code.
+
+Fill in the lm() function to calculate a linear model of mpg described by wt and save it as an object called carModel.
+Draw the linear model on the scatterplot.
+Write code that calls abline() with carModel as the first argument. Set the line type by passing the argument lty = 2.
+Run the code that generates the basic plot and the call to abline() all at once by highlighting both parts of the script and hitting control/command + enter on your keyboard. These lines must all be run together in the DataCamp R console so that R will be able to find the plot you want to add a line to.
+Run the code already given to generate the plot with a different model for each group. You don't need to modify any of this.
+
+```{r baseVggplotPart2Lm}
+# Use lm() to calculate a linear model and save it as carModel
+carModel <- lm(mpg ~ wt, data = mtcars)
+
+# Basic plot
+mtcars$cyl <- as.factor(mtcars$cyl)
+plot(mtcars$wt, mtcars$mpg, col = mtcars$cyl)
+
+# Call abline() with carModel as first argument and set lty to 2
+abline(carModel, lty = 2)
+
+# Plot each subset efficiently with lapply
+# You don't have to edit this code
+plot(mtcars$wt, mtcars$mpg, col = mtcars$cyl)
+lapply(mtcars$cyl, function(x) {
+  abline(lm(mpg ~ wt, mtcars, subset = (cyl == x)), col = x)
+  })
+
+# This code will draw the legend of the plot
+# You don't have to edit this code
+legend(x = 5, y = 33, legend = levels(mtcars$cyl),
+       col = 1:3, pch = 1, bty = "n")
+#Notice how the legend had to be set manually. In general, ggplot2 makes it easier to polish plots compared to base graphics.
+```
+
+###base package and ggplot2, part 3
+In this exercise you'll recreate the base package plot in ggplot2.
+
+The code for base R plotting is given at the top. The first line of code already converts the cyl variable of mtcars to a factor.
+
+Plot 1: add geom_point() in order to make a scatter plot.
+
+Plot 2: copy and paste Plot 1
+
+Add a linear model for each subset according to cyl by adding a geom_smooth() layer
+
+Inside this geom_smooth(), set method to "lm" and se to FALSE.
+
+Note: geom_smooth() will automatically draw a line per cyl subset. It recognizes the groups you want to identify by color in the aes() call within the ggplot() command.
+
+Plot 3: copy and paste Plot 2
+
+Plot a linear model for the entire dataset, do this by adding another geom_smooth() layer
+
+Set the group aesthetic inside this geom_smooth() layer to 1. This has to be set within the aes() function.
+
+Set method to "lm", se to FALSE and linetype to 2. These have to be set outside aes() of the geom_smooth().
+
+Note: the group aesthetic will tell ggplot() to draw a single linear model through all the points.
+```{r baseVggplotPart3}
+# Convert cyl to factor (don't need to change)
+mtcars$cyl <- as.factor(mtcars$cyl)
+
+# Example from base R (don't need to change)
+plot(mtcars$wt, mtcars$mpg, col = mtcars$cyl)
+abline(lm(mpg ~ wt, data = mtcars), lty = 2)
+lapply(mtcars$cyl, function(x) {
+  abline(lm(mpg ~ wt, mtcars, subset = (cyl == x)), col = x)
+  })
+legend(x = 5, y = 33, legend = levels(mtcars$cyl),
+       col = 1:3, pch = 1, bty = "n")
+
+# Plot 1: add geom_point() to this command to create a scatter plot
+ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) +
+  geom_point()  # Fill in using instructions Plot 1
+
+# Plot 2: include the lines of the linear models, per cyl
+ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) +
+  geom_point() + # Copy from Plot 1
+  geom_smooth(method = "lm", se = FALSE)   # Fill in using instructions Plot 2
+
+# Plot 3: include a lm for the entire dataset in its whole
+ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) +
+  geom_point() + # Copy from Plot 2
+  geom_smooth(method = "lm", se = FALSE) + # Copy from Plot 2
+  geom_smooth(aes(group = 1),
+              method = "lm",
+              se = FALSE,
+              linetype = 2)# Fill in using instructions Plot 3
+```
+
+
+```{r}
+par(mfrow = c(1, 2))
+ggplot(diamonds, aes(x = carat, y = price,
+                     color = clarity)) +
+    geom_smooth()
+
+ggplot(diamonds, aes(x = carat, y = price)) +
+    geom_smooth(aes(color = clarity))
+```
+
+
