@@ -433,13 +433,41 @@ ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) +
 
 
 ```{r}
-par(mfrow = c(1, 2))
-ggplot(diamonds, aes(x = carat, y = price,
-                     color = clarity)) +
-    geom_smooth()
+#this is not the correct way to do this, just a sample - missing a legend, so it can't be right
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+        geom_point() +
+        geom_point(aes(x = Petal.Length, y = Petal.Width), col = "red")
 
-ggplot(diamonds, aes(x = carat, y = price)) +
-    geom_smooth(aes(color = clarity))
 ```
 
+ggplot in contrast to base:
+1. Plotting space is adjusted
+2. ggplot2 produces an object - not a static image
 
+```{r irisWide}
+library(tidyverse)
+iris.wide <- gather(iris, PartW, Width, Sepal.Width, Petal.Width) %>% 
+        gather(PartL, Length, Sepal.Length, Petal.Length) %>% 
+        gather(PartDel, Part, PartW, PartL) %>%
+        select(-PartDel)
+iris.wide$Part[iris.wide$Part == "Sepal.Width"] <- "Sepal"
+iris.wide$Part[iris.wide$Part == "Sepal.Length"] <- "Sepal"
+iris.wide$Part[iris.wide$Part == "Petal.Width"] <- "Petal"
+iris.wide$Part[iris.wide$Part == "Petal.Width"] <- "Petal"
+iris.wide <- select(iris.wide, Species, Part, Length, Width)
+head(iris.wide)
+```
+
+###Plotting the ggplot2 way
+In the video, Rick showed you different ggplot2 calls to plot two groups of data onto the same plot:
+
+#### Option 1
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point() +
+  geom_point(aes(x = Petal.Length, y = Petal.Width), col = "red")
+
+#### Option 2
+ggplot(iris.wide, aes(x = Length, y = Width, col = Part)) +
+  geom_point()
+Which one is preferable? Both iris and iris.wide are available in the workspace, so you can experiment in the R Console straight away!
+Option 2 is superior
